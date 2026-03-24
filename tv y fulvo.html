@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📺 TV en Vivo | MS47</title>
     <style>
-        body { margin: 0; background: #0f0f0f; color: white; font-family: Arial, sans-serif; }
+        body { margin: 0; background: #0f0f0f; color: white; font-family: Arial, sans-serif; padding-bottom: 50px; }
         header { position: fixed; top: 0; width: 100%; background: #111; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,.6); z-index: 1000; }
         .volver { position: absolute; left: 15px; top: 18px; font-size: 14px; text-decoration: none; color: #00bfff; }
         .container { padding: 100px 20px 40px; max-width: 1300px; margin: auto; }
@@ -17,37 +17,63 @@
         .card h3 { padding: 5px; font-size: 11px; margin: 0; background: #1b1b1b; color: #ddd; flex-grow: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
         
         /* Panel de Administración */
-        #admin-trigger { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; cursor: pointer; z-index: 9999; }
-        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #181818; padding: 25px; border: 2px solid #00bfff; z-index: 10000; width: 320px; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-        #admin-panel input { width: 100%; padding: 10px; margin: 8px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        #admin-panel button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #admin-trigger { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; cursor: pointer; z-index: 9999; background: rgba(0,191,255,0.2); border-radius: 50% 0 0 0; }
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #181818; padding: 25px; border: 2px solid #00bfff; z-index: 10000; width: 350px; max-height: 80vh; overflow-y: auto; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        #admin-panel h3 { margin: 0 0 15px 0; color: #00bfff; text-align: center; }
+        #admin-panel select, #admin-panel input { width: 100%; padding: 10px; margin: 8px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        #admin-panel button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-save { background: #00bfff; color: #000; }
-        .btn-close { background: #444; color: #fff; }
+        .btn-save:hover { background: #009acc; }
+        .btn-delete { background: #ff4444; color: #fff; margin-top: 5px !important; display: none; }
+        .btn-close { background: #444; color: #fff; margin-top: 15px !important; }
+        
+        /* Lista de canales en el panel */
+        #admin-channel-list { margin-top: 20px; border-top: 1px solid #444; padding-top: 10px; }
+        .admin-ch-item { padding: 8px; background: #222; margin-bottom: 5px; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; justify-content: space-between; }
+        .admin-ch-item:hover { background: #333; }
+        .loading { text-align: center; color: #888; padding: 20px; }
     </style>
 </head>
 <body>
 
 <header><a href="categorias.html" class="volver">⬅ Volver</a> 📺 TV EN VIVO MS47</header>
 
-<div class="container">
-    <h2 id="titulo-seccion">📡 TODOS LOS CANALES</h2>
-    <div id="grid-canales" class="grid">
-        </div>
-</div>
+<div id="main-container" class="container">
+    <div id="loading-msg" class="loading">Conectando con la nube...</div>
+    </div>
 
-<div id="admin-trigger" onclick="toggleAdmin()"></div>
+<div id="admin-trigger" onclick="openAdminPanel()"></div>
 <div id="admin-panel">
-    <h3 style="margin: 0 0 15px 0; color: #00bfff;">Panel MS47 Master</h3>
-    <input type="text" id="add-name" placeholder="Nombre del Canal (Ej: TyC Sports)">
-    <input type="text" id="add-img" placeholder="URL de Imagen (PNG)">
-    <input type="text" id="add-link" placeholder="URL del Stream (Link)">
-    <button class="btn-save" onclick="saveChannel()">AGREGAR A LA NUBE</button>
-    <button class="btn-close" onclick="toggleAdmin()">CERRAR</button>
+    <h3>Panel MS47 Master</h3>
+    
+    <div id="admin-inputs">
+        <input type="hidden" id="edit-key">
+        <label style="font-size:12px; color:#aaa;">Categoría:</label>
+        <select id="add-category">
+            <option value="deportes">⚽ DEPORTES</option>
+            <option value="cine">🎬 CINE Y SERIES</option>
+            <option value="nacionales">🇦🇷 NACIONALES</option>
+            <option value="documentales">🌿 DOCUMENTALES</option>
+            <option value="infantiles">🧒 INFANTILES</option>
+        </select>
+        <input type="text" id="add-name" placeholder="Nombre (Ej: TyC Sports)">
+        <input type="text" id="add-img" placeholder="URL Imagen (PNG)">
+        <input type="text" id="add-link" placeholder="URL Stream">
+        
+        <button id="btn-save" class="btn-save" onclick="saveChannel()">GUARDAR CAMBIOS</button>
+        <button id="btn-delete" class="btn-delete" onclick="deleteChannel()">BORRAR CANAL</button>
+        <button class="btn-close" onclick="closeAdminPanel()">CERRAR</button>
+    </div>
+
+    <div id="admin-channel-list">
+        <div style="font-size:12px; color:#00bfff; margin-bottom:10px;">Click para editar:</div>
+        <div id="channel-list-container"></div>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
@@ -61,50 +87,168 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const grid = document.getElementById('grid-canales');
+    const mainContainer = document.getElementById('main-container');
+    const listContainer = document.getElementById('channel-list-container');
+    const ADMIN_PASSWORD = "ms47admin"; // <--- CAMBIA TU CONTRASEÑA AQUÍ
+    let allChannelsData = {};
 
-    // Cargar canales en tiempo real
+    // --- CARGA INICIAL AUTOMÁTICA (Si Firebase está vacío) ---
+    async function checkAndInitDB() {
+        const snapshot = await get(ref(db, 'canales'));
+        if (!snapshot.exists()) {
+            console.log("Firebase vacío. Iniciando carga automática...");
+            const initialData = {
+                // Deportes
+                "ch1": { category: "deportes", name: "TyC Sports", img: "https://zonahack.com.ar/img/canales/tyc.png", link: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ" },
+                "ch2": { category: "deportes", name: "ESPN Premium", img: "https://zonahack.com.ar/img/canales/espnpremium.png", link: "https://dots.bestleague.world/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE" },
+                // Cine
+                "ch3": { category: "cine", name: "HBO", img: "https://zonahack.com.ar/img/canales/hbo.png", link: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=" },
+                // Nacionales
+                "ch4": { category: "nacionales", name: "Telefe", img: "https://zonahack.com.ar/img/canales/telefe.png", link: "https://dots.bestleague.world/cvatt.html?get=VGVsZWZlSEQ=" },
+                // Agrega aquí el resto de la lista larga si lo deseas para la primera carga
+            };
+            await set(ref(db, 'canales'), initialData);
+            console.log("Carga inicial completada.");
+        }
+    }
+    checkAndInitDB();
+
+    // --- RENDERIZADO DE LA WEB (Para todos) ---
+    const categoriasDef = {
+        deportes: { titulo: "⚽ DEPORTES", color: "#ff0000" },
+        cine: { titulo: "🎬 CINE Y SERIES", color: "#00bfff" },
+        nacionales: { titulo: "🇦🇷 NACIONALES", color: "#ffffff" },
+        documentales: { titulo: "🌿 DOCUMENTALES", color: "#00ff00" },
+        infantiles: { titulo: "🧒 INFANTILES", color: "#ffcc00" }
+    };
+
     onValue(ref(db, 'canales'), (snapshot) => {
+        document.getElementById('loading-msg').style.display = 'none';
         const data = snapshot.val();
-        grid.innerHTML = ""; 
+        allChannelsData = data || {};
+        mainContainer.innerHTML = "";
+        listContainer.innerHTML = ""; // Limpiar lista del panel
+
         if (data) {
+            // Organizar por categorías
+            const organized = {};
+            Object.keys(categoriasDef).forEach(cat => organized[cat] = []);
+            
             Object.keys(data).forEach(key => {
                 const ch = data[key];
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => window.open(ch.link, '_blank');
-                card.innerHTML = `
-                    <img src="${ch.img}" onerror="this.src='https://via.placeholder.com/150?text=Error+Link'">
-                    <h3>${ch.name}</h3>
-                `;
-                grid.appendChild(card);
+                if (organized[ch.category]) {
+                    organized[ch.category].push({ ...ch, key });
+                }
+                // Llenar lista del panel de admin
+                const listItem = document.createElement('div');
+                listItem.className = 'admin-ch-item';
+                listItem.innerHTML = `<span>${ch.name}</span> <span style="color:#888;">${ch.category}</span>`;
+                listItem.onclick = () => populateForm(key, ch);
+                listContainer.appendChild(listItem);
             });
+
+            // Renderizar secciones en la web
+            Object.keys(categoriasDef).forEach(catKey => {
+                const canales = organized[catKey];
+                if (canales.length > 0) {
+                    const sectionTitle = document.createElement('h2');
+                    sectionTitle.style.borderColor = categoriasDef[catKey].color;
+                    sectionTitle.textContent = categoriasDef[catKey].titulo;
+                    mainContainer.appendChild(sectionTitle);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'grid';
+                    
+                    canales.forEach(ch => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.onclick = () => window.open(ch.link, '_blank');
+                        card.innerHTML = `
+                            <img src="${ch.img}" onerror="this.src='https://via.placeholder.com/150?text=Error+Imagen'">
+                            <h3>${ch.name}</h3>
+                        `;
+                        grid.appendChild(card);
+                    });
+                    mainContainer.appendChild(grid);
+                }
+            });
+        } else {
+            mainContainer.innerHTML = '<div class="loading">No hay canales cargados. Abre el panel para agregar.</div>';
         }
     });
 
-    // Función para guardar (Global para el botón)
+    // --- FUNCIONES DEL PANEL ADMIN (Con clave) ---
+    window.openAdminPanel = function() {
+        const pass = prompt("Contraseña de Administrador:");
+        if (pass === ADMIN_PASSWORD) {
+            document.getElementById('admin-panel').style.display = 'block';
+            resetForm(); // Asegurar que empiece limpio
+        } else if (pass !== null) {
+            alert("Contraseña incorrecta.");
+        }
+    };
+
+    window.closeAdminPanel = function() {
+        document.getElementById('admin-panel').style.display = 'none';
+    };
+
+    function resetForm() {
+        document.getElementById('edit-key').value = "";
+        document.getElementById('add-name').value = "";
+        document.getElementById('add-img').value = "";
+        document.getElementById('add-link').value = "";
+        document.getElementById('add-category').value = "deportes";
+        document.getElementById('btn-save').textContent = "AGREGAR NUEVO CANAL";
+        document.getElementById('btn-delete').style.display = 'none';
+    }
+
+    function populateForm(key, ch) {
+        document.getElementById('edit-key').value = key;
+        document.getElementById('add-name').value = ch.name;
+        document.getElementById('add-img').value = ch.img;
+        document.getElementById('add-link').value = ch.link;
+        document.getElementById('add-category').value = ch.category;
+        document.getElementById('btn-save').textContent = "ACTUALIZAR CANAL";
+        document.getElementById('btn-delete').style.display = 'block';
+        // Scroll hacia arriba en el panel para ver los inputs
+        document.getElementById('admin-panel').scrollTop = 0;
+    }
+
     window.saveChannel = function() {
+        const key = document.getElementById('edit-key').value;
         const name = document.getElementById('add-name').value;
         const img = document.getElementById('add-img').value;
         const link = document.getElementById('add-link').value;
+        const category = document.getElementById('add-category').value;
 
         if (name && img && link) {
-            const newRef = push(ref(db, 'canales'));
-            set(newRef, { name, img, link }).then(() => {
-                alert("Canal sincronizado en la nube.");
-                document.getElementById('admin-panel').style.display = 'none';
-                document.getElementById('add-name').value = "";
-                document.getElementById('add-img').value = "";
-                document.getElementById('add-link').value = "";
-            });
+            if (key) {
+                // Actualizar existente
+                set(ref(db, `canales/${key}`), { name, img, link, category }).then(() => {
+                    alert("Canal actualizado.");
+                    resetForm();
+                });
+            } else {
+                // Crear nuevo
+                const newRef = push(ref(db, 'canales'));
+                set(newRef, { name, img, link, category }).then(() => {
+                    alert("Nuevo canal agregado.");
+                    resetForm();
+                });
+            }
         } else {
             alert("Completa todos los datos.");
         }
     };
 
-    window.toggleAdmin = function() {
-        const p = document.getElementById('admin-panel');
-        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    window.deleteChannel = function() {
+        const key = document.getElementById('edit-key').value;
+        if (key && confirm("¿Seguro que quieres borrar este canal?")) {
+            remove(ref(db, `canales/${key}`)).then(() => {
+                alert("Canal borrado.");
+                resetForm();
+            });
+        }
     };
 </script>
 
