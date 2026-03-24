@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📺 TV en Vivo | MS47</title>
+    <title>📺 TV en Vivo | MS47 Master Downloader</title>
     <style>
         body { margin: 0; background: #0f0f0f; color: white; font-family: sans-serif; padding-bottom: 50px; }
         header { position: fixed; top: 0; width: 100%; background: #111; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 2px solid #00bfff; z-index: 1000; }
@@ -34,7 +34,7 @@
 </header>
 
 <div class="container" id="main-content">
-    <p style="text-align:center;">Cargando catálogo MS47...</p>
+    <p style="text-align:center;">Sincronizando canales con la nube...</p>
 </div>
 
 <div id="admin-trigger" onclick="checkAdmin()"></div>
@@ -77,35 +77,61 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- CARGA DE TODO EL LISTADO ---
-    async function inyectarTodoElCatalogo() {
+    async function inyectarTodo() {
         const base = [
-            // DEPORTES
-            { n: "TyC Sports", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ=", o: 1 },
-            { n: "ESPN Premium", c: "deportes", l: "https://bolaloca.my/player/3/75", o: 2 },
-            { n: "TNT Sports", c: "deportes", l: "https://bolaloca.my/player/3/76", o: 3 },
-            { n: "DSports", c: "deportes", l: "", o: 4 },
-            { n: "ESPN", c: "deportes", l: "", o: 5 },
-            { n: "Fox Sports", c: "deportes", l: "https://bolaloca.my/player/3/80", o: 10 },
-            { n: "DeporTV", c: "deportes", l: "", o: 15 },
-            // CINE
-            { n: "HBO", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", o: 20 },
-            { n: "HBO Plus", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPK0hE", o: 21 },
-            { n: "AXN", c: "cine", l: "", o: 25 },
-            { n: "Warner TV", c: "cine", l: "", o: 26 },
-            { n: "Volver", c: "cine", l: "", o: 30 },
             // NACIONALES
-            { n: "Telefe", c: "nacionales", l: "", o: 40 },
-            { n: "El Trece", c: "nacionales", l: "", o: 41 },
-            { n: "TV Pública", c: "nacionales", l: "https://infofutbol.online/reproductor/tvpublica.html", o: 42 },
-            { n: "TN", c: "nacionales", l: "", o: 45 },
-            // DOCUMENTALES
-            { n: "Discovery", c: "documentales", l: "", o: 60 },
-            { n: "History", c: "documentales", l: "", o: 61 },
-            { n: "Nat Geo", c: "documentales", l: "", o: 62 },
+            { n: "TV Publica", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=Q2FuYWw3", o: 1 },
+            { n: "TELEFE", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=VGVsZWZlSEQ=", o: 2 },
+            { n: "TN", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=VG9kb05vdGljaWFz", o: 3 },
+            { n: "Canal 13", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=QXJ0ZWFySEQ", o: 4 },
+            { n: "El Nueve", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=Q2FuYWw5", o: 5 },
+            { n: "America 24", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=QW1lcmljYTI0", o: 6 },
+            { n: "Canal 26", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=MjZfVFZfSEQ", o: 7 },
+            { n: "Cronica TV", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=Q3JvbmljYVRW", o: 8 },
+            { n: "Ciudad Magazine", c: "nacionales", l: "https://dots.bestleague.world/cvatt.html?get=TWFnYXppbmU=", o: 9 },
+            // CINE Y SERIES
+            { n: "AXN", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=QVhOSEQ=", o: 20 },
+            { n: "FX", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=RlhIRA==", o: 21 },
+            { n: "Warner Bros", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=V2FybmVySEQ=&lang=1", o: 22 },
+            { n: "Universal TV", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=U3R1ZGlvX1VuaXZlcnNhbA==&lang=1", o: 23 },
+            { n: "Space", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=U3BhY2U=&lang=1", o: 24 },
+            { n: "HBO", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=&lang=1", o: 25 },
+            { n: "HBO 2", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPXzI=&lang=1", o: 26 },
+            { n: "HB+", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPX1BsdXM=&lang=1", o: 27 },
+            { n: "HBO Xtreme", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPX0V4dHJlbWU=&lang=1", o: 28 },
+            { n: "HBO Family", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPX0ZhbWlseQ==&lang=1", o: 29 },
+            { n: "Sony Chanel", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=U29ueUhE&lang=1", o: 30 },
+            { n: "TCM", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=VENN&lang=1", o: 31 },
+            { n: "Volver", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=Vm9sdmVy&lang=1", o: 32 },
+            { n: "Las Estrellas", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=Q2FuYWxfZGVfbGFzX2VzdHJlbGxhcw==", o: 33 },
+            // DEPORTES
+            { n: "TyC Sports", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ", o: 50 },
+            { n: "ESPN Premium", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=Rm94X1Nwb3J0c19QcmVtaXVuX0hE", o: 51 },
+            { n: "TNT Sports Premium", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=VE5UX1Nwb3J0c19IRA", o: 52 },
+            { n: "DSports", c: "deportes", l: "https://rereyano.ru/player/4/94", o: 53 },
+            { n: "DSports +", c: "deportes", l: "https://rereyano.ru/player/4/96", o: 54 },
+            { n: "DeporTV", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=RGVwb3JUVkhE", o: 55 },
+            { n: "ESPN MX", c: "deportes", l: "https://la14hd.com/vivo/canal.php?stream=espnmx", o: 56 },
+            { n: "ESPN 2", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=RVNQTjJfQXJn&lang=1", o: 57 },
+            { n: "ESPN 3", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=RVNQTjJfQXJn&lang=1", o: 58 },
+            { n: "ESPN 4", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=RVNQTkhE&lang=1", o: 59 },
+            { n: "ESPN 5", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=RVNQTjQ=&lang=1", o: 60 },
+            { n: "ESPN 6", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=Rm94U3BvcnRzM19VWQ==&lang=1", o: 61 },
+            { n: "ESPN 7", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=Rm94U3BvcnRzMl9VWQ==&lang=1", o: 62 },
+            // DOCUMENTALES / VARIOS
+            { n: "Animal Planet", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=QW5pbWFsUGxhbmV0", o: 80 },
+            { n: "Nat Geographic", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=TmF0R2VvSEQ=", o: 81 },
+            { n: "History", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=SGlzdG9yeUhE&lang=1", o: 82 },
+            { n: "History 2", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=SGlzdG9yeV8y&lang=1", o: 83 },
+            { n: "World Discovery", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=RGlzY292ZXJ5X1dvcmxkX0hE&lang=1", o: 84 },
+            { n: "Discovery Theater", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=VGhlYXRlcl9IRA==&lang=1", o: 85 },
+            { n: "MTV", c: "documentales", l: "https://dots.bestleague.world/cvatt.html?get=TVRWX0hE&lang=1", o: 86 },
             // INFANTILES
-            { n: "Cartoon Network", c: "infantiles", l: "", o: 80 },
-            { n: "Disney Channel", c: "infantiles", l: "", o: 81 }
+            { n: "Nickelodeon", c: "infantiles", l: "https://dots.bestleague.world/cvatt.html?get=Tmlja2Vsb2Rlb24=", o: 100 },
+            { n: "Discovery Kids", c: "infantiles", l: "https://dots.bestleague.world/cvatt.html?get=RGlzY292ZXJ5X0tpZHM=", o: 101 },
+            { n: "Disney Chanel", c: "infantiles", l: "https://dots.bestleague.world/cvatt.html?get=RGlzbmV5Q2hhbm5lbEhE", o: 102 },
+            { n: "Disney Jr", c: "infantiles", l: "https://dots.bestleague.world/cvatt.html?get=RGlzbmV5SnI=", o: 103 },
+            { n: "Cartoon Network", c: "infantiles", l: "https://dots.bestleague.world/cvatt.html?get=Q2FydG9vbk5ldHdvcms=", o: 104 }
         ];
 
         const snap = await get(ref(db, 'canales'));
@@ -119,19 +145,16 @@
             }
         }
     }
-    inyectarTodoElCatalogo();
+    inyectarTodo();
 
-    // --- RENDERIZADO ---
     onValue(ref(db, 'canales'), (snapshot) => {
         const data = snapshot.val();
         const main = document.getElementById('main-content');
         const list = document.getElementById('admin-list');
-        main.innerHTML = ""; list.innerHTML = "<h4>EDITAR:</h4>";
-
+        main.innerHTML = ""; list.innerHTML = "<h4>EDITAR LOGOS/LINKS:</h4>";
         if (!data) return;
 
         const cats = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES", documentales: "🌿 DOCUMENTALES", infantiles: "👦 INFANTILES" };
-        
         Object.keys(cats).forEach(k => {
             const items = Object.entries(data).map(([id, v]) => ({ id, ...v }))
                 .filter(i => i.category === k).sort((a,b) => a.order - b.order);
@@ -140,7 +163,7 @@
                 main.innerHTML += `<h2>${cats[k]}</h2><div class="grid" id="g-${k}"></div>`;
                 items.forEach(ch => {
                     document.getElementById(`g-${k}`).innerHTML += `
-                        <div class="card" onclick="if('${ch.link}') window.open('${ch.link}', '_blank'); else alert('Link no configurado')">
+                        <div class="card" onclick="window.open('${ch.link}', '_blank')">
                             <img src="${ch.img || 'https://via.placeholder.com/150?text=MS47'}" onerror="this.src='https://via.placeholder.com/150?text=SIN+LOGO'">
                             <h3>${ch.name}</h3>
                         </div>`;
@@ -150,7 +173,6 @@
         });
     });
 
-    // --- ADMIN ---
     window.checkAdmin = () => { if(prompt("Clave:") === "ms47admin") document.getElementById('admin-panel').style.display='block'; };
     window.closeAdmin = () => { document.getElementById('admin-panel').style.display='none'; reset(); };
     window.saveChannel = () => {
