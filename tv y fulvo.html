@@ -10,24 +10,20 @@
         .volver { position: absolute; left: 20px; color: #00bfff; text-decoration: none; border: 1px solid #00bfff; padding: 5px 10px; border-radius: 5px; font-size: 14px; }
         .container { padding: 80px 20px 20px; max-width: 1200px; margin: auto; }
         h2 { border-left: 5px solid #00bfff; padding-left: 10px; margin: 30px 0 15px; font-size: 18px; text-transform: uppercase; color: #00bfff; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .card { background: #1b1b1b; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid #333; text-align: center; }
-        .card:hover { border-color: #00bfff; transform: scale(1.05); }
-        .card img { width: 100%; height: 100px; object-fit: contain; background: white; padding: 10px; box-sizing: border-box; }
-        .card h3 { font-size: 13px; padding: 10px; margin: 0; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .card { background: #1b1b1b; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid #333; text-align: center; }
+        .card:hover { border-color: #00bfff; transform: translateY(-3px); }
+        .card img { width: 100%; height: 80px; object-fit: contain; background: white; padding: 8px; box-sizing: border-box; }
+        .card h3 { font-size: 11px; padding: 8px; margin: 0; text-transform: uppercase; }
 
         /* PANEL ADMIN */
-        #admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 40px; height: 40px; cursor: pointer; z-index: 2000; opacity: 0; }
-        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; padding: 25px; border: 2px solid #00bfff; border-radius: 15px; z-index: 3000; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
-        .admin-inputs input, .admin-inputs select { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn-save { width: 100%; padding: 15px; background: #00bfff; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 8px; margin: 10px 0; font-size: 16px; }
-        
-        /* LISTA EDITABLE */
-        .admin-list { margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #333; }
-        .admin-item-btns button { margin-left: 10px; padding: 6px 10px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; }
-        .edit-btn { background: #ffc107; color: black; }
-        .del-btn { background: #ff4444; color: white; }
+        #admin-trigger { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; cursor: pointer; z-index: 2000; }
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; padding: 20px; border: 2px solid #00bfff; border-radius: 12px; z-index: 3000; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 50px #000; }
+        .admin-inputs input, .admin-inputs select { width: 100%; padding: 10px; margin: 6px 0; background: #222; border: 1px solid #444; color: white; border-radius: 6px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 12px; background: #00bfff; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 6px; margin: 10px 0; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 8px; margin-bottom: 5px; border-radius: 4px; border: 1px solid #333; font-size: 12px; }
+        .edit-btn { background: #ffc107; border: none; padding: 5px; border-radius: 3px; cursor: pointer; }
+        .del-btn { background: #ff4444; border: none; padding: 5px; color: white; border-radius: 3px; cursor: pointer; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -38,28 +34,30 @@
 </header>
 
 <div class="container" id="main-content">
-    <p style="text-align:center; margin-top:50px;">Sincronizando con la nube MS47...</p>
+    <p style="text-align:center;">Cargando catálogo MS47...</p>
 </div>
 
 <div id="admin-trigger" onclick="checkAdmin()"></div>
 
 <div id="admin-panel">
-    <h3 style="text-align:center; color:#00bfff; margin-top:0;">CONTROL DE CANALES</h3>
+    <h3 style="text-align:center; color:#00bfff; margin-top:0;">ADMIN MS47</h3>
     <div class="admin-inputs">
         <input type="hidden" id="f-id">
         <select id="f-cat">
             <option value="deportes">⚽ DEPORTES</option>
             <option value="cine">🎬 CINE Y SERIES</option>
             <option value="nacionales">🇦🇷 NACIONALES</option>
+            <option value="documentales">🌿 DOCUMENTALES</option>
+            <option value="infantiles">👦 INFANTILES</option>
         </select>
-        <input type="text" id="f-name" placeholder="Nombre del Canal">
-        <input type="text" id="f-img" placeholder="URL del Logo (PNG)">
-        <input type="text" id="f-link" placeholder="URL de Transmisión">
-        <input type="number" id="f-order" placeholder="Posición (1, 2, 3...)">
-        <button class="btn-save" id="btn-action" onclick="saveChannel()">GUARDAR CAMBIOS</button>
-        <button style="width:100%; padding:10px; background:#333; border:none; color:white; border-radius:8px; cursor:pointer;" onclick="closeAdmin()">CANCELAR</button>
+        <input type="text" id="f-name" placeholder="Nombre (Ej: Telefe)">
+        <input type="text" id="f-img" placeholder="URL Logo (PNG)">
+        <input type="text" id="f-link" placeholder="URL Transmisión">
+        <input type="number" id="f-order" placeholder="Posición">
+        <button class="btn-save" id="btn-action" onclick="saveChannel()">GUARDAR</button>
+        <button style="width:100%; padding:8px; background:#333; color:white; border:none; border-radius:6px;" onclick="closeAdmin()">CERRAR</button>
     </div>
-    <div class="admin-list" id="admin-list"></div>
+    <div id="admin-list" style="margin-top:20px;"></div>
 </div>
 
 <script type="module">
@@ -79,133 +77,97 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- CARGA FORZADA DE CANALES ---
-    async function cargarCanalesFaltantes() {
-        const base = {
-            "tyc": { category: "deportes", name: "TyC Sports", img: "", link: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ=", order: 1 },
-            "espn_p": { category: "deportes", name: "ESPN Premium", img: "", link: "https://bolaloca.my/player/3/75", order: 2 },
-            "fox_1": { category: "deportes", name: "Fox Sports", img: "", link: "https://bolaloca.my/player/3/80", order: 3 },
-            "tnt_p": { category: "deportes", name: "TNT Sports Premium", img: "", link: "https://bolaloca.my/player/3/76", order: 4 },
-            "hbo": { category: "cine", name: "HBO", img: "", link: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", order: 10 },
-            "hbo_p": { category: "cine", name: "HBO Plus", img: "", link: "https://dots.bestleague.world/cvatt.html?get=SEJPK0hE", order: 11 },
-            "tvp": { category: "nacionales", name: "TV Pública", img: "", link: "https://infofutbol.online/reproductor/tvpublica.html", order: 20 }
-        };
+    // --- CARGA DE TODO EL LISTADO ---
+    async function inyectarTodoElCatalogo() {
+        const base = [
+            // DEPORTES
+            { n: "TyC Sports", c: "deportes", l: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ=", o: 1 },
+            { n: "ESPN Premium", c: "deportes", l: "https://bolaloca.my/player/3/75", o: 2 },
+            { n: "TNT Sports", c: "deportes", l: "https://bolaloca.my/player/3/76", o: 3 },
+            { n: "DSports", c: "deportes", l: "", o: 4 },
+            { n: "ESPN", c: "deportes", l: "", o: 5 },
+            { n: "Fox Sports", c: "deportes", l: "https://bolaloca.my/player/3/80", o: 10 },
+            { n: "DeporTV", c: "deportes", l: "", o: 15 },
+            // CINE
+            { n: "HBO", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", o: 20 },
+            { n: "HBO Plus", c: "cine", l: "https://dots.bestleague.world/cvatt.html?get=SEJPK0hE", o: 21 },
+            { n: "AXN", c: "cine", l: "", o: 25 },
+            { n: "Warner TV", c: "cine", l: "", o: 26 },
+            { n: "Volver", c: "cine", l: "", o: 30 },
+            // NACIONALES
+            { n: "Telefe", c: "nacionales", l: "", o: 40 },
+            { n: "El Trece", c: "nacionales", l: "", o: 41 },
+            { n: "TV Pública", c: "nacionales", l: "https://infofutbol.online/reproductor/tvpublica.html", o: 42 },
+            { n: "TN", c: "nacionales", l: "", o: 45 },
+            // DOCUMENTALES
+            { n: "Discovery", c: "documentales", l: "", o: 60 },
+            { n: "History", c: "documentales", l: "", o: 61 },
+            { n: "Nat Geo", c: "documentales", l: "", o: 62 },
+            // INFANTILES
+            { n: "Cartoon Network", c: "infantiles", l: "", o: 80 },
+            { n: "Disney Channel", c: "infantiles", l: "", o: 81 }
+        ];
 
         const snap = await get(ref(db, 'canales'));
         const actual = snap.val() || {};
+        const existentes = Object.values(actual).map(v => v.name.toLowerCase());
 
-        for (let key in base) {
-            // Si el canal no existe por ID o por nombre, lo inyectamos
-            const existeNombre = Object.values(actual).some(c => c.name === base[key].name);
-            if (!actual[key] && !existeNombre) {
-                await set(ref(db, `canales/${key}`), base[key]);
+        for (const item of base) {
+            if (!existentes.includes(item.n.toLowerCase())) {
+                const newRef = push(ref(db, 'canales'));
+                await set(newRef, { category: item.c, name: item.n, img: "", link: item.l, order: item.o });
             }
         }
     }
-    cargarCanalesFaltantes();
+    inyectarTodoElCatalogo();
 
-    // --- ESCUCHA DE CAMBIOS Y RENDER ---
+    // --- RENDERIZADO ---
     onValue(ref(db, 'canales'), (snapshot) => {
         const data = snapshot.val();
         const main = document.getElementById('main-content');
         const list = document.getElementById('admin-list');
-        main.innerHTML = "";
-        list.innerHTML = "<h4>LISTADO EDITABLE:</h4>";
+        main.innerHTML = ""; list.innerHTML = "<h4>EDITAR:</h4>";
 
-        if (!data) {
-            main.innerHTML = "<p style='text-align:center;'>No hay canales. Usá el panel secreto para agregar.</p>";
-            return;
-        }
+        if (!data) return;
 
-        const categorias = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES" };
+        const cats = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES", documentales: "🌿 DOCUMENTALES", infantiles: "👦 INFANTILES" };
         
-        Object.keys(categorias).forEach(catKey => {
-            const canales = Object.entries(data)
-                .map(([id, val]) => ({ id, ...val }))
-                .filter(c => c.category === catKey)
-                .sort((a, b) => a.order - b.order);
+        Object.keys(cats).forEach(k => {
+            const items = Object.entries(data).map(([id, v]) => ({ id, ...v }))
+                .filter(i => i.category === k).sort((a,b) => a.order - b.order);
 
-            if (canales.length > 0) {
-                main.innerHTML += `<h2>${categorias[catKey]}</h2><div class="grid" id="grid-${catKey}"></div>`;
-                const grid = document.getElementById(`grid-${catKey}`);
-                
-                canales.forEach(ch => {
-                    grid.innerHTML += `
-                        <div class="card" onclick="window.open('${ch.link}', '_blank')">
+            if (items.length > 0) {
+                main.innerHTML += `<h2>${cats[k]}</h2><div class="grid" id="g-${k}"></div>`;
+                items.forEach(ch => {
+                    document.getElementById(`g-${k}`).innerHTML += `
+                        <div class="card" onclick="if('${ch.link}') window.open('${ch.link}', '_blank'); else alert('Link no configurado')">
                             <img src="${ch.img || 'https://via.placeholder.com/150?text=MS47'}" onerror="this.src='https://via.placeholder.com/150?text=SIN+LOGO'">
                             <h3>${ch.name}</h3>
                         </div>`;
-                    
-                    list.innerHTML += `
-                        <div class="admin-item">
-                            <span>${ch.name}</span>
-                            <div class="admin-item-btns">
-                                <button class="edit-btn" onclick="prepareEdit('${ch.id}', '${ch.name}', '${ch.img}', '${ch.link}', '${ch.category}', ${ch.order})">✏️</button>
-                                <button class="del-btn" onclick="deleteChannel('${ch.id}')">🗑️</button>
-                            </div>
-                        </div>`;
+                    list.innerHTML += `<div class="admin-item">${ch.name} <div><button class="edit-btn" onclick="prepareEdit('${ch.id}','${ch.name}','${ch.img}','${ch.link}','${ch.category}',${ch.order})">✏️</button><button class="del-btn" onclick="deleteChannel('${ch.id}')">🗑️</button></div></div>`;
                 });
             }
         });
     });
 
-    // --- FUNCIONES ADMIN ---
-    window.checkAdmin = () => {
-        if(prompt("Clave Admin MS47:") === "ms47admin") {
-            document.getElementById('admin-panel').style.display='block';
-        }
-    };
-
-    window.closeAdmin = () => {
-        document.getElementById('admin-panel').style.display='none';
-        resetForm();
-    };
-
+    // --- ADMIN ---
+    window.checkAdmin = () => { if(prompt("Clave:") === "ms47admin") document.getElementById('admin-panel').style.display='block'; };
+    window.closeAdmin = () => { document.getElementById('admin-panel').style.display='none'; reset(); };
     window.saveChannel = () => {
         const id = document.getElementById('f-id').value;
-        const info = {
-            category: document.getElementById('f-cat').value,
-            name: document.getElementById('f-name').value,
-            img: document.getElementById('f-img').value,
-            link: document.getElementById('f-link').value,
-            order: parseInt(document.getElementById('f-order').value) || 99
-        };
-
-        if(!info.name || !info.link) return alert("Nombre y Link son obligatorios");
-
-        const dbRef = id ? ref(db, `canales/${id}`) : push(ref(db, 'canales'));
-        set(dbRef, info).then(() => {
-            alert("¡Base de datos actualizada!");
-            resetForm();
-        });
+        const obj = { category: document.getElementById('f-cat').value, name: document.getElementById('f-name').value, img: document.getElementById('f-img').value, link: document.getElementById('f-link').value, order: parseInt(document.getElementById('f-order').value) || 99 };
+        set(id ? ref(db, `canales/${id}`) : push(ref(db, 'canales')), obj).then(() => { alert("Guardado"); reset(); });
     };
-
-    window.prepareEdit = (id, name, img, link, cat, order) => {
-        document.getElementById('f-id').value = id;
-        document.getElementById('f-name').value = name;
-        document.getElementById('f-img').value = img;
-        document.getElementById('f-link').value = link;
-        document.getElementById('f-cat').value = cat;
-        document.getElementById('f-order').value = order;
-        document.getElementById('btn-action').innerText = "ACTUALIZAR CANAL";
-        window.scrollTo(0,0);
+    window.prepareEdit = (id, n, i, l, c, o) => {
+        document.getElementById('f-id').value = id; document.getElementById('f-name').value = n; document.getElementById('f-img').value = i;
+        document.getElementById('f-link').value = l; document.getElementById('f-cat').value = c; document.getElementById('f-order').value = o;
+        document.getElementById('btn-action').innerText = "ACTUALIZAR";
     };
-
-    window.deleteChannel = (id) => {
-        if(confirm("¿Seguro que querés borrar este canal de la nube?")) {
-            remove(ref(db, `canales/${id}`));
-        }
-    };
-
-    function resetForm() {
-        document.getElementById('f-id').value = "";
-        document.getElementById('f-name').value = "";
-        document.getElementById('f-img').value = "";
-        document.getElementById('f-link').value = "";
-        document.getElementById('f-order').value = "";
-        document.getElementById('btn-action').innerText = "GUARDAR CAMBIOS";
+    window.deleteChannel = (id) => { if(confirm("¿Borrar?")) remove(ref(db, `canales/${id}`)); };
+    function reset() { 
+        document.getElementById('f-id').value = ""; document.getElementById('f-name').value = ""; document.getElementById('f-img').value = "";
+        document.getElementById('f-link').value = ""; document.getElementById('f-order').value = ""; document.getElementById('btn-action').innerText = "GUARDAR";
     }
 </script>
-
 </body>
 </html>
