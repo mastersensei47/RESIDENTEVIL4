@@ -11,18 +11,23 @@
         .container { padding: 80px 20px 20px; max-width: 1200px; margin: auto; }
         h2 { border-left: 5px solid #00bfff; padding-left: 10px; margin: 30px 0 15px; font-size: 18px; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .card { background: #1b1b1b; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid #333; text-align: center; }
+        .card { background: #1b1b1b; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid #333; text-align: center; position: relative; }
         .card:hover { border-color: #00bfff; transform: scale(1.05); }
         .card img { width: 100%; height: 100px; object-fit: contain; background: white; padding: 10px; box-sizing: border-box; }
-        .card h3 { font-size: 12px; padding: 10px; margin: 0; }
+        .card h3 { font-size: 12px; padding: 10px; margin: 0; background: #1b1b1b; }
 
-        /* PANEL ADMIN */
-        #admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; cursor: pointer; z-index: 2000; opacity: 0.2; }
-        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1c1c1c; padding: 20px; border: 2px solid #00bfff; border-radius: 10px; z-index: 3000; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-        #admin-panel input, #admin-panel select { width: 100%; padding: 10px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-save { width: 100%; padding: 12px; background: #00bfff; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        .btn-cancel { width: 100%; padding: 8px; background: #333; border: none; color: white; margin-top: 10px; cursor: pointer; border-radius: 5px; }
-        .loading { text-align: center; padding: 50px; color: #00bfff; }
+        /* PANEL ADMIN MEJORADO */
+        #admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 40px; height: 40px; cursor: pointer; z-index: 2000; opacity: 0.1; }
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1c1c1c; padding: 20px; border: 2px solid #00bfff; border-radius: 10px; z-index: 3000; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; box-shadow: 0 0 40px rgba(0,0,0,0.9); }
+        .admin-inputs input, .admin-inputs select { width: 100%; padding: 10px; margin: 5px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 12px; background: #00bfff; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 5px; margin: 10px 0; }
+        
+        /* LISTADO EDITABLE */
+        .admin-list { margin-top: 20px; border-top: 1px solid #444; padding-top: 15px; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #222; padding: 8px; margin-bottom: 5px; border-radius: 4px; font-size: 13px; }
+        .admin-item-btns button { margin-left: 5px; padding: 4px 8px; cursor: pointer; border: none; border-radius: 3px; font-weight: bold; }
+        .edit-btn { background: #ffc107; color: black; }
+        .del-btn { background: #ff4444; color: white; }
     </style>
 </head>
 <body>
@@ -32,30 +37,34 @@
     <span>📺 TV EN VIVO MS47</span>
 </header>
 
-<div class="container" id="main-content">
-    <div id="status" class="loading">Sincronizando canales con MS47...</div>
-</div>
+<div class="container" id="main-content"></div>
 
 <div id="admin-trigger" onclick="checkAdmin()"></div>
 
 <div id="admin-panel">
-    <h3 style="text-align:center; color:#00bfff; margin-top:0;">PANEL MS47</h3>
-    <select id="f-cat">
-        <option value="deportes">⚽ DEPORTES</option>
-        <option value="cine">🎬 CINE Y SERIES</option>
-        <option value="nacionales">🇦🇷 NACIONALES</option>
-    </select>
-    <input type="text" id="f-name" placeholder="Nombre (Ej: TyC Sports)">
-    <input type="text" id="f-img" placeholder="URL Logo (PNG)">
-    <input type="text" id="f-link" placeholder="URL de Transmisión">
-    <input type="number" id="f-order" placeholder="Orden (1, 2, 3...)">
-    <button class="btn-save" onclick="saveChannel()">GUARDAR EN LA NUBE</button>
-    <button class="btn-cancel" onclick="document.getElementById('admin-panel').style.display='none'">CANCELAR</button>
+    <h3 style="text-align:center; color:#00bfff; margin-top:0;">GESTIÓN MS47</h3>
+    <div class="admin-inputs">
+        <input type="hidden" id="f-id">
+        <select id="f-cat">
+            <option value="deportes">⚽ DEPORTES</option>
+            <option value="cine">🎬 CINE Y SERIES</option>
+            <option value="nacionales">🇦🇷 NACIONALES</option>
+        </select>
+        <input type="text" id="f-name" placeholder="Nombre (Ej: ESPN Premium)">
+        <input type="text" id="f-img" placeholder="URL Logo (PNG)">
+        <input type="text" id="f-link" placeholder="URL de Transmisión">
+        <input type="number" id="f-order" placeholder="Orden (Ej: 1)">
+        <button class="btn-save" id="btn-action" onclick="saveChannel()">GUARDAR CANAL</button>
+        <button style="width:100%; padding:8px; background:#444; border:none; color:white; border-radius:5px;" onclick="closeAdmin()">CERRAR</button>
+    </div>
+
+    <div class="admin-list" id="admin-list">
+        </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
@@ -70,37 +79,49 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- 1. CARGA AUTOMÁTICA DE CANALES VIEJOS ---
-    async function initMS47() {
+    // --- CARGA AUTOMÁTICA DE TODOS LOS CANALES ANTERIORES ---
+    async function cargarAnteriores() {
         const snap = await get(ref(db, 'canales'));
-        if (!snap.exists()) {
-            const inicial = {
-                "ch1": { category: "deportes", name: "TyC Sports", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tyc_sports.png", link: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ", order: 1 },
-                "ch2": { category: "deportes", name: "TNT Sports Premium", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tnt_sports.png", link: "https://bolaloca.my/player/3/75", order: 2 },
-                "ch3": { category: "cine", name: "HBO", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/hbo.png", link: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", order: 3 }
+        // Si hay menos de 5 canales, asumimos que faltan los clásicos y los inyectamos
+        if (!snap.exists() || Object.keys(snap.val()).length < 5) {
+            const clásicos = {
+                "tyc": { category: "deportes", name: "TyC Sports", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tyc_sports.png", link: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ=", order: 1 },
+                "espn": { category: "deportes", name: "ESPN Premium", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/espn.png", link: "https://bolaloca.my/player/3/75", order: 2 },
+                "fox": { category: "deportes", name: "Fox Sports", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/fox_sports.png", link: "https://bolaloca.my/player/3/80", order: 3 },
+                "tnt": { category: "deportes", name: "TNT Sports Premium", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tnt_sports.png", link: "https://bolaloca.my/player/3/76", order: 4 },
+                "hbo": { category: "cine", name: "HBO", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/hbo.png", link: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", order: 5 },
+                "hbo_plus": { category: "cine", name: "HBO Plus", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/hbo_plus.png", link: "https://dots.bestleague.world/cvatt.html?get=SEJPK0hE", order: 6 },
+                "tvp": { category: "nacionales", name: "TV Pública", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tv_publica.png", link: "https://infofutbol.online/reproductor/tvpublica.html", order: 7 }
             };
-            await set(ref(db, 'canales'), inicial);
+            // Usamos update para no borrar lo que ya agregaste vos
+            const updates = {};
+            for(let key in clásicos) updates['canales/' + key] = clásicos[key];
+            await set(ref(db), updates);
         }
     }
-    initMS47();
+    cargarAnteriores();
 
-    // --- 2. MOSTRAR CANALES EN TIEMPO REAL ---
+    // --- RENDERIZADO EN TIEMPO REAL ---
     onValue(ref(db, 'canales'), (snapshot) => {
         const data = snapshot.val();
         const main = document.getElementById('main-content');
+        const list = document.getElementById('admin-list');
         main.innerHTML = "";
+        list.innerHTML = "<h4>LISTADO (Toca para editar):</h4>";
 
         if (!data) return;
 
-        const cats = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES" };
+        const categorias = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES" };
         
-        Object.keys(cats).forEach(key => {
-            const filtrados = Object.values(data)
+        // Dibujar en la web
+        Object.keys(categorias).forEach(key => {
+            const filtrados = Object.entries(data)
+                .map(([id, val]) => ({ id, ...val }))
                 .filter(c => c.category === key)
                 .sort((a, b) => a.order - b.order);
 
             if (filtrados.length > 0) {
-                main.innerHTML += `<h2>${cats[key]}</h2><div class="grid" id="grid-${key}"></div>`;
+                main.innerHTML += `<h2>${categorias[key]}</h2><div class="grid" id="grid-${key}"></div>`;
                 const grid = document.getElementById(`grid-${key}`);
                 filtrados.forEach(ch => {
                     grid.innerHTML += `
@@ -108,17 +129,33 @@
                             <img src="${ch.img}" onerror="this.src='https://via.placeholder.com/150?text=MS47'">
                             <h3>${ch.name}</h3>
                         </div>`;
+                    
+                    // Agregar al listado del admin
+                    list.innerHTML += `
+                        <div class="admin-item">
+                            <span>${ch.name} (${key})</span>
+                            <div class="admin-item-btns">
+                                <button class="edit-btn" onclick="prepareEdit('${ch.id}', '${ch.name}', '${ch.img}', '${ch.link}', '${ch.category}', ${ch.order})">✏️</button>
+                                <button class="del-btn" onclick="deleteChannel('${ch.id}')">🗑️</button>
+                            </div>
+                        </div>`;
                 });
             }
         });
     });
 
-    // --- 3. FUNCIONES DE ADMIN ---
+    // --- ACCIONES DE ADMIN ---
     window.checkAdmin = () => {
-        if(prompt("Contraseña Admin:") === "ms47admin") document.getElementById('admin-panel').style.display='block';
+        if(prompt("Clave MS47:") === "ms47admin") document.getElementById('admin-panel').style.display='block';
+    };
+
+    window.closeAdmin = () => {
+        document.getElementById('admin-panel').style.display='none';
+        resetForm();
     };
 
     window.saveChannel = () => {
+        const id = document.getElementById('f-id').value;
         const nuevo = {
             category: document.getElementById('f-cat').value,
             name: document.getElementById('f-name').value,
@@ -127,13 +164,40 @@
             order: parseInt(document.getElementById('f-order').value) || 99
         };
 
-        if(!nuevo.name || !nuevo.link) return alert("Cargá nombre y link!");
+        if(!nuevo.name || !nuevo.link) return alert("Completá nombre y link");
 
-        push(ref(db, 'canales'), nuevo).then(() => {
-            alert("¡Canal Sincronizado!");
-            document.getElementById('admin-panel').style.display='none';
+        const targetRef = id ? ref(db, `canales/${id}`) : push(ref(db, 'canales'));
+        set(targetRef, nuevo).then(() => {
+            alert(id ? "Actualizado" : "Guardado");
+            resetForm();
         });
     };
+
+    window.prepareEdit = (id, name, img, link, cat, order) => {
+        document.getElementById('f-id').value = id;
+        document.getElementById('f-name').value = name;
+        document.getElementById('f-img').value = img;
+        document.getElementById('f-link').value = link;
+        document.getElementById('f-cat').value = cat;
+        document.getElementById('f-order').value = order;
+        document.getElementById('btn-action').innerText = "ACTUALIZAR CANAL";
+        document.getElementById('f-name').focus();
+    };
+
+    window.deleteChannel = (id) => {
+        if(confirm("¿Borrar este canal de MS47?")) {
+            remove(ref(db, `canales/${id}`));
+        }
+    };
+
+    function resetForm() {
+        document.getElementById('f-id').value = "";
+        document.getElementById('f-name').value = "";
+        document.getElementById('f-img').value = "";
+        document.getElementById('f-link').value = "";
+        document.getElementById('f-order').value = "";
+        document.getElementById('btn-action').innerText = "GUARDAR CANAL";
+    }
 </script>
 
 </body>
