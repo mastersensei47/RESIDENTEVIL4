@@ -9,23 +9,23 @@
         header { position: fixed; top: 0; width: 100%; background: #111; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 2px solid #00bfff; z-index: 1000; }
         .volver { position: absolute; left: 20px; color: #00bfff; text-decoration: none; border: 1px solid #00bfff; padding: 5px 10px; border-radius: 5px; font-size: 14px; }
         .container { padding: 80px 20px 20px; max-width: 1200px; margin: auto; }
-        h2 { border-left: 5px solid #00bfff; padding-left: 10px; margin: 30px 0 15px; font-size: 18px; text-transform: uppercase; }
+        h2 { border-left: 5px solid #00bfff; padding-left: 10px; margin: 30px 0 15px; font-size: 18px; text-transform: uppercase; color: #00bfff; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .card { background: #1b1b1b; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid #333; text-align: center; position: relative; }
+        .card { background: #1b1b1b; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid #333; text-align: center; }
         .card:hover { border-color: #00bfff; transform: scale(1.05); }
         .card img { width: 100%; height: 100px; object-fit: contain; background: white; padding: 10px; box-sizing: border-box; }
-        .card h3 { font-size: 12px; padding: 10px; margin: 0; background: #1b1b1b; }
+        .card h3 { font-size: 13px; padding: 10px; margin: 0; text-transform: uppercase; }
 
         /* PANEL ADMIN */
-        #admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 40px; height: 40px; cursor: pointer; z-index: 2000; opacity: 0.1; }
-        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1c1c1c; padding: 20px; border: 2px solid #00bfff; border-radius: 10px; z-index: 3000; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 40px rgba(0,0,0,0.9); }
-        .admin-inputs input, .admin-inputs select { width: 100%; padding: 10px; margin: 5px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-save { width: 100%; padding: 12px; background: #00bfff; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 5px; margin: 10px 0; }
+        #admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 40px; height: 40px; cursor: pointer; z-index: 2000; opacity: 0; }
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; padding: 25px; border: 2px solid #00bfff; border-radius: 15px; z-index: 3000; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
+        .admin-inputs input, .admin-inputs select { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 15px; background: #00bfff; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 8px; margin: 10px 0; font-size: 16px; }
         
-        /* LISTADO EDITABLE */
-        .admin-list { margin-top: 20px; border-top: 1px solid #444; padding-top: 15px; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #222; padding: 8px; margin-bottom: 5px; border-radius: 4px; font-size: 12px; }
-        .admin-item-btns button { margin-left: 5px; padding: 4px 8px; cursor: pointer; border: none; border-radius: 3px; font-weight: bold; }
+        /* LISTA EDITABLE */
+        .admin-list { margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #333; }
+        .admin-item-btns button { margin-left: 10px; padding: 6px 10px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; }
         .edit-btn { background: #ffc107; color: black; }
         .del-btn { background: #ff4444; color: white; }
     </style>
@@ -37,12 +37,14 @@
     <span>📺 TV EN VIVO MS47</span>
 </header>
 
-<div class="container" id="main-content"></div>
+<div class="container" id="main-content">
+    <p style="text-align:center; margin-top:50px;">Sincronizando con la nube MS47...</p>
+</div>
 
 <div id="admin-trigger" onclick="checkAdmin()"></div>
 
 <div id="admin-panel">
-    <h3 style="text-align:center; color:#00bfff; margin-top:0;">GESTIÓN MS47</h3>
+    <h3 style="text-align:center; color:#00bfff; margin-top:0;">CONTROL DE CANALES</h3>
     <div class="admin-inputs">
         <input type="hidden" id="f-id">
         <select id="f-cat">
@@ -50,19 +52,19 @@
             <option value="cine">🎬 CINE Y SERIES</option>
             <option value="nacionales">🇦🇷 NACIONALES</option>
         </select>
-        <input type="text" id="f-name" placeholder="Nombre (Ej: ESPN Premium)">
-        <input type="text" id="f-img" placeholder="URL Logo (PNG)">
+        <input type="text" id="f-name" placeholder="Nombre del Canal">
+        <input type="text" id="f-img" placeholder="URL del Logo (PNG)">
         <input type="text" id="f-link" placeholder="URL de Transmisión">
-        <input type="number" id="f-order" placeholder="Orden (Ej: 1)">
-        <button class="btn-save" id="btn-action" onclick="saveChannel()">GUARDAR CANAL</button>
-        <button style="width:100%; padding:8px; background:#444; border:none; color:white; border-radius:5px;" onclick="closeAdmin()">CERRAR</button>
+        <input type="number" id="f-order" placeholder="Posición (1, 2, 3...)">
+        <button class="btn-save" id="btn-action" onclick="saveChannel()">GUARDAR CAMBIOS</button>
+        <button style="width:100%; padding:10px; background:#333; border:none; color:white; border-radius:8px; cursor:pointer;" onclick="closeAdmin()">CANCELAR</button>
     </div>
     <div class="admin-list" id="admin-list"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set, update, push, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
@@ -77,56 +79,60 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- CARGA FORZADA DE LOS CANALES QUE FALTEN ---
-    async function inyectarFaltantes() {
+    // --- CARGA FORZADA DE CANALES ---
+    async function cargarCanalesFaltantes() {
+        const base = {
+            "tyc": { category: "deportes", name: "TyC Sports", img: "", link: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ=", order: 1 },
+            "espn_p": { category: "deportes", name: "ESPN Premium", img: "", link: "https://bolaloca.my/player/3/75", order: 2 },
+            "fox_1": { category: "deportes", name: "Fox Sports", img: "", link: "https://bolaloca.my/player/3/80", order: 3 },
+            "tnt_p": { category: "deportes", name: "TNT Sports Premium", img: "", link: "https://bolaloca.my/player/3/76", order: 4 },
+            "hbo": { category: "cine", name: "HBO", img: "", link: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", order: 10 },
+            "hbo_p": { category: "cine", name: "HBO Plus", img: "", link: "https://dots.bestleague.world/cvatt.html?get=SEJPK0hE", order: 11 },
+            "tvp": { category: "nacionales", name: "TV Pública", img: "", link: "https://infofutbol.online/reproductor/tvpublica.html", order: 20 }
+        };
+
         const snap = await get(ref(db, 'canales'));
-        const data = snap.val() || {};
-        const existentes = Object.values(data).map(c => c.name.toLowerCase());
+        const actual = snap.val() || {};
 
-        const base = [
-            { id: "ch_tyc", category: "deportes", name: "TyC Sports", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tyc_sports.png", link: "https://dots.bestleague.world/cvatt.html?get=VHlDU3BvcnQ=", order: 1 },
-            { id: "ch_espn_p", category: "deportes", name: "ESPN Premium", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/espn.png", link: "https://bolaloca.my/player/3/75", order: 2 },
-            { id: "ch_fox_1", category: "deportes", name: "Fox Sports", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/fox_sports.png", link: "https://bolaloca.my/player/3/80", order: 3 },
-            { id: "ch_tnt_p", category: "deportes", name: "TNT Sports Premium", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tnt_sports.png", link: "https://bolaloca.my/player/3/76", order: 4 },
-            { id: "ch_hbo", category: "cine", name: "HBO", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/hbo.png", link: "https://dots.bestleague.world/cvatt.html?get=SEJPSEQ=", order: 10 },
-            { id: "ch_hbo_p", category: "cine", name: "HBO Plus", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/hbo_plus.png", link: "https://dots.bestleague.world/cvatt.html?get=SEJPK0hE", order: 11 },
-            { id: "ch_tvp", category: "nacionales", name: "TV Pública", img: "https://raw.githubusercontent.com/fede-navarro/logos-tv/main/tv_publica.png", link: "https://infofutbol.online/reproductor/tvpublica.html", order: 20 }
-        ];
-
-        for (const ch of base) {
-            if (!existentes.includes(ch.name.toLowerCase())) {
-                const { id, ...cleanCh } = ch;
-                await set(ref(db, `canales/${id}`), cleanCh);
+        for (let key in base) {
+            // Si el canal no existe por ID o por nombre, lo inyectamos
+            const existeNombre = Object.values(actual).some(c => c.name === base[key].name);
+            if (!actual[key] && !existeNombre) {
+                await set(ref(db, `canales/${key}`), base[key]);
             }
         }
     }
-    inyectarFaltantes();
+    cargarCanalesFaltantes();
 
-    // --- MOSTRAR Y ADMINISTRAR ---
+    // --- ESCUCHA DE CAMBIOS Y RENDER ---
     onValue(ref(db, 'canales'), (snapshot) => {
         const data = snapshot.val();
         const main = document.getElementById('main-content');
         const list = document.getElementById('admin-list');
         main.innerHTML = "";
-        list.innerHTML = "<h4>GESTIONAR CANALES EXISTENTES:</h4>";
+        list.innerHTML = "<h4>LISTADO EDITABLE:</h4>";
 
-        if (!data) return;
+        if (!data) {
+            main.innerHTML = "<p style='text-align:center;'>No hay canales. Usá el panel secreto para agregar.</p>";
+            return;
+        }
 
-        const cats = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES" };
+        const categorias = { deportes: "⚽ DEPORTES", cine: "🎬 CINE Y SERIES", nacionales: "🇦🇷 NACIONALES" };
         
-        Object.keys(cats).forEach(key => {
-            const filtrados = Object.entries(data)
+        Object.keys(categorias).forEach(catKey => {
+            const canales = Object.entries(data)
                 .map(([id, val]) => ({ id, ...val }))
-                .filter(c => c.category === key)
+                .filter(c => c.category === catKey)
                 .sort((a, b) => a.order - b.order);
 
-            if (filtrados.length > 0) {
-                main.innerHTML += `<h2>${cats[key]}</h2><div class="grid" id="grid-${key}"></div>`;
-                const grid = document.getElementById(`grid-${key}`);
-                filtrados.forEach(ch => {
+            if (canales.length > 0) {
+                main.innerHTML += `<h2>${categorias[catKey]}</h2><div class="grid" id="grid-${catKey}"></div>`;
+                const grid = document.getElementById(`grid-${catKey}`);
+                
+                canales.forEach(ch => {
                     grid.innerHTML += `
                         <div class="card" onclick="window.open('${ch.link}', '_blank')">
-                            <img src="${ch.img}" onerror="this.src='https://via.placeholder.com/150?text=MS47'">
+                            <img src="${ch.img || 'https://via.placeholder.com/150?text=MS47'}" onerror="this.src='https://via.placeholder.com/150?text=SIN+LOGO'">
                             <h3>${ch.name}</h3>
                         </div>`;
                     
@@ -144,20 +150,34 @@
     });
 
     // --- FUNCIONES ADMIN ---
-    window.checkAdmin = () => { if(prompt("Clave:") === "ms47admin") document.getElementById('admin-panel').style.display='block'; };
-    window.closeAdmin = () => { document.getElementById('admin-panel').style.display='none'; resetForm(); };
+    window.checkAdmin = () => {
+        if(prompt("Clave Admin MS47:") === "ms47admin") {
+            document.getElementById('admin-panel').style.display='block';
+        }
+    };
+
+    window.closeAdmin = () => {
+        document.getElementById('admin-panel').style.display='none';
+        resetForm();
+    };
 
     window.saveChannel = () => {
         const id = document.getElementById('f-id').value;
-        const nuevo = {
+        const info = {
             category: document.getElementById('f-cat').value,
             name: document.getElementById('f-name').value,
             img: document.getElementById('f-img').value,
             link: document.getElementById('f-link').value,
             order: parseInt(document.getElementById('f-order').value) || 99
         };
-        const targetRef = id ? ref(db, `canales/${id}`) : push(ref(db, 'canales'));
-        set(targetRef, nuevo).then(() => { alert("Listo!"); resetForm(); });
+
+        if(!info.name || !info.link) return alert("Nombre y Link son obligatorios");
+
+        const dbRef = id ? ref(db, `canales/${id}`) : push(ref(db, 'canales'));
+        set(dbRef, info).then(() => {
+            alert("¡Base de datos actualizada!");
+            resetForm();
+        });
     };
 
     window.prepareEdit = (id, name, img, link, cat, order) => {
@@ -167,11 +187,15 @@
         document.getElementById('f-link').value = link;
         document.getElementById('f-cat').value = cat;
         document.getElementById('f-order').value = order;
-        document.getElementById('btn-action').innerText = "ACTUALIZAR DATOS";
-        document.getElementById('f-name').focus();
+        document.getElementById('btn-action').innerText = "ACTUALIZAR CANAL";
+        window.scrollTo(0,0);
     };
 
-    window.deleteChannel = (id) => { if(confirm("¿Eliminar de la nube?")) remove(ref(db, `canales/${id}`)); };
+    window.deleteChannel = (id) => {
+        if(confirm("¿Seguro que querés borrar este canal de la nube?")) {
+            remove(ref(db, `canales/${id}`));
+        }
+    };
 
     function resetForm() {
         document.getElementById('f-id').value = "";
@@ -179,8 +203,9 @@
         document.getElementById('f-img').value = "";
         document.getElementById('f-link').value = "";
         document.getElementById('f-order').value = "";
-        document.getElementById('btn-action').innerText = "GUARDAR CANAL";
+        document.getElementById('btn-action').innerText = "GUARDAR CAMBIOS";
     }
 </script>
+
 </body>
 </html>
